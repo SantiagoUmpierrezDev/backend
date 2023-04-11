@@ -1,22 +1,25 @@
-const fs = require('fs');
+const fs = require('fs/promises');
 
 class ProductManager {
   constructor(filePath) {
     this.products = [];
     this.path = filePath;
-
-    // Leer el archivo y cargar los productos en el arreglo
-    try {
-      const data = fs.readFileSync(this.path, 'utf-8');
-      this.products = JSON.parse(data);
-    } catch (error) {
-      console.log(`Error al leer el archivo ${this.path}. El archivo será creado al guardar el primer producto.`);
-    }
   }
+    
+  async readFile() {
+    try {
+        const data = await fs.promises.readFile(this.path, 'utf-8')
+        return JSON.parse(data)            
+    } catch (error) {
+      console.log(`Error reading product file: ${error.message}`);
+    }
+    
+  }
+
   
-  addProduct(title, description, price, thumbnail, code, stock) {
+  async addProduct(title, description, price, thumbnail, code, stock, category) {
     // Verificar si todos los campos están completos
-    if (!title || !description || !price || !thumbnail || !code || !stock) {
+    if (!title || !description || !price || !category || !code || !stock ) {
       console.log('Todos los campos son requeridos para agregar un producto.');
       return;
     }
@@ -29,6 +32,7 @@ class ProductManager {
     }
 
     // Agregar el producto al arreglo products
+    const status = true;
     const newProduct = {
       id: this.products.length + 1,
       title: title,
@@ -36,7 +40,9 @@ class ProductManager {
       price: price,
       thumbnail: thumbnail,
       code: code,
-      stock: stock
+      stock: stock,
+      category: category, 
+      status, 
     };
     this.products.push(newProduct);
 
@@ -47,18 +53,16 @@ class ProductManager {
   }
 
   getProductById(id) {
-    const product = this.products.find((p) => p.id === id);
-    if (!product) {
-      console.log(`No se ha encontrado un producto con id ${id}.`);
-    }
+    const products = this.products;
+    const product = products.find((product) => product.id === id);
     return product;
   }
 
   getProducts() {
     return this.products;
-  }
+    }
 
-  updateProduct(id, fieldToUpdate) {
+  async updateProduct(id, fieldToUpdate) {
     const index = this.products.findIndex((p) => p.id === id);
     if (index === -1) {
       console.log(`No se ha encontrado un producto con id ${id}.`);
@@ -78,7 +82,7 @@ class ProductManager {
     console.log(`El producto con código ${id} se ha actualizado correctamente.`);
   }
 
-  deleteProduct(id) {
+  async deleteProduct(id) {
     const index = this.products.findIndex((p) => p.id === id);
     if (index === -1) {
       console.log(`No se ha encontrado un producto con id ${id}.`);
