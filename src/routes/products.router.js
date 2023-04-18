@@ -1,5 +1,5 @@
-const express = require('express');
-const ProductManager = require('../managerDaos/productManager');
+import express from 'express';
+import ProductManager from '../managerDaos/productManager.js';
 const productsRouter = express.Router();
 const productMan = new ProductManager("./src/data/products.json")
 
@@ -65,4 +65,4 @@ productsRouter.delete('/:pid', async (req, res) => {
   }
 });
 
-module.exports = productsRouter;
+export default productsRouter;

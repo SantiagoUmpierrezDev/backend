@@ -1,0 +1,12 @@
+<h1>Real time Products</h1>
+{{#if products}}
+  <ul>
+    {{#each products}}
+      <li>{{this.name}} - {{this.price}}</li>
+    {{/each}}
+  </ul>
+{{else}}
+  <p>No products found.</p>
+{{/if}}
+
+<script src="/static/js/realTimeProducts.js"></script>

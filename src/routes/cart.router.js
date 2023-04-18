@@ -1,9 +1,9 @@
-const express = require('express');
-const router = express.Router();
-const CartManager = require('../managerDaos/cartManager.js');
+import express from 'express';
+const cartRouter = express.Router();
+import CartManager from '../managerDaos/cartManager.js';
 const cartMan = new CartManager("./src/data/cart.json");
 
-router.post('/', async (req, res) => {
+cartRouter.post('/', async (req, res) => {
   try {
     const cart = await cartMan.createCart();
     res.status(201).json(cart);
@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.post('/:cid/product/:pid', async (req, res) => {
+cartRouter.post('/:cid/product/:pid', async (req, res) => {
   const { cid, pid } = req.params;
   try {
     const cart = await cartMan.addProductToCart(cid, pid);
@@ -24,7 +24,7 @@ router.post('/:cid/product/:pid', async (req, res) => {
   }
 });
 
-router.get('/:cid', async (req, res) => {
+cartRouter.get('/:cid', async (req, res) => {
   const { cid } = req.params;
   try {
     const cart = await cartMan.getCartById(cid);
@@ -35,4 +35,4 @@ router.get('/:cid', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default cartRouter;

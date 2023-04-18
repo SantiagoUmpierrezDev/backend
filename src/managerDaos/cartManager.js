@@ -1,21 +1,21 @@
-const fs = require('fs/promises');
-const ProductManager = require('./productManager');
+import fs from 'fs/promises'
+import ProductManager from './productManager.js';
 const productMan = new ProductManager("./src/data/products.json")
 
 class CartManager {
   constructor(path) {
     this.path = path;
-    this.carts = []; // initialize the carts array here
+    this.carts = []; 
   }
 
   async readCart() {
     try {
       const data = await fs.readFile(this.path, 'utf8');
       const carts = JSON.parse(data);
-      return carts || []; // return an empty array if the file is empty or if it cannot be parsed as JSON
+      return carts || []; 
     } catch (error) {
       console.error(`Error reading cart file: ${error.message}`);
-      return []; // return an empty array if file does not exist or cannot be read
+      return []; 
     }
   }
 
@@ -72,7 +72,7 @@ class CartManager {
       return carts;
     } catch (error) {
       console.error(`Error reading cart file: ${error.message}`);
-      return []; // return an empty array if file does not exist, is empty, or cannot be parsed as JSON
+      return []; 
     }
   }
 
@@ -90,4 +90,4 @@ class CartManager {
 }
 
 
-module.exports = CartManager;
+export default CartManager;

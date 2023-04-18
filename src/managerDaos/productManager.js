@@ -1,4 +1,4 @@
-const fs = require('fs/promises');
+import fs from 'fs/promises';
 
 class ProductManager {
   constructor(filePath) {
@@ -8,7 +8,7 @@ class ProductManager {
     
   async readFile() {
     try {
-        const data = await fs.promises.readFile(this.path, 'utf-8')
+        const data = await fs.promises.readFile(this.path, 'utf-8');
         return JSON.parse(data)            
     } catch (error) {
       console.log(`Error reading product file: ${error.message}`);
@@ -104,4 +104,4 @@ class ProductManager {
   }
 }
 
-module.exports = ProductManager;
+export default ProductManager;
