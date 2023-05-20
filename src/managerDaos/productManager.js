@@ -1,107 +1,95 @@
-import fs from 'fs/promises';
+const fs = require('fs').promises
 
 class ProductManager {
-  constructor(filePath) {
-    this.products = [];
-    this.path = filePath;
-  }
-    
-  async readFile() {
-    try {
-        const data = await fs.promises.readFile(this.path, 'utf-8');
-        return JSON.parse(data)            
-    } catch (error) {
-      console.log(`Error reading product file: ${error.message}`);
+    constructor(filePath){
+        this.filePath = filePath
+        this.products = []
+    }
+
+    async loadProducts() {
+        try {
+            if(fs.stat(this.filePath)){
+                const fileData = await fs.readFile(this.filePath, 'utf-8');
+                this.products = JSON.parse(fileData)
+            }
+        } catch (err) {
+            fs.writeFile(this.filePath, JSON.stringify(this.products), 'utf-8')
+        }
     }
     
-  }
-
-  
-  async addProduct(title, description, price, thumbnail, code, stock, category) {
-    // Verificar si todos los campos están completos
-    if (!title || !description || !price || !category || !code || !stock ) {
-      console.log('Todos los campos son requeridos para agregar un producto.');
-      return;
+    async saveProducts() {
+        try {
+            const jsonData = JSON.stringify(this.products)
+            await fs.writeFile(this.filePath, jsonData)
+        } catch (err) {
+            throw new Error(err.message)
+        }
     }
 
-    // Verificar si el código identificador ya existe
-    const existingProduct = this.products.some((product) => product.code === code);
-    if (existingProduct) {
-      console.log(`No se pudo agregar el producto con código ${code} porque ya existe.`);
-      return;
+    async addProduct(product){
+        const exists = this.products.some((productSaved) => productSaved.code == product.code)
+        
+        if(exists)
+            throw new Error("The product already exists")
+        
+        if(exists == false && product.title && product.description && product.code && product.price && product.stock && product.category && product.thumbnail){
+            this.products.push({
+                id: this.products.length + 1,
+                title: product.title,
+                description: product.description,
+                code: product.code,
+                price: product.price,
+                status: product.status === false ? false : true,
+                stock: product.stock,
+                category: product.category,
+                thumbnail: product.thumbnail
+            })
+            
+            await this.saveProducts()
+        }else{
+            throw new Error("All the fields are required")
+        }
     }
 
-    // Agregar el producto al arreglo products
-    const status = true;
-    const newProduct = {
-      id: this.products.length + 1,
-      title: title,
-      description: description,
-      price: price,
-      thumbnail: thumbnail,
-      code: code,
-      stock: stock,
-      category: category, 
-      status, 
-    };
-    this.products.push(newProduct);
-
-    // Guardar el arreglo en el archivo
-    fs.writeFileSync(this.path, JSON.stringify(this.products));
-
-    console.log(`El producto ${title} se ha agregado correctamente.`);
-  }
-
-  getProductById(id) {
-    const products = this.products;
-    const product = products.find((product) => product.id === id);
-    return product;
-  }
-
-  getProducts() {
-    return this.products;
+    getProducts(){
+        return this.products
     }
 
-  async updateProduct(id, fieldToUpdate) {
-    const index = this.products.findIndex((p) => p.id === id);
-    if (index === -1) {
-      console.log(`No se ha encontrado un producto con id ${id}.`);
-      return;
+    getProductById(id){
+        const productById = this.products.find((product) => product.id == id)
+        if(productById){ return productById }
+        else{ throw new Error("A product with the id:" + id + "does not exist") }
     }
 
-    // Actualizar el producto
-    const updatedProduct = {
-      ...this.products[index],
-      ...fieldToUpdate
-    };
-    this.products[index] = updatedProduct;
+    async updateProduct(id, updatedProduct){
+        const productToUpdate = this.products.find( product => product.id == id )
+        if(productToUpdate){
+            const isRepeated = this.products.some((productSaved) => productSaved.code == updatedProduct.code) 
+            if(isRepeated == false){
+                this.products[id - 1] = { 
+                    ...this.products[id - 1], 
+                    ...updatedProduct 
+                }
 
-    // Guardar el arreglo en el archivo
-    fs.writeFileSync(this.path, JSON.stringify(this.products));
-
-    console.log(`El producto con código ${id} se ha actualizado correctamente.`);
-  }
-
-  async deleteProduct(id) {
-    const index = this.products.findIndex((p) => p.id === id);
-    if (index === -1) {
-      console.log(`No se ha encontrado un producto con id ${id}.`);
-      return;
+                await this.saveProducts()
+            }else{
+                throw new Error("A product with the code" + updatedProduct.code + "already exists")
+            }
+        }else{
+            throw new Error("A product with the id:" + id + "does not exist")
+        }
     }
 
-    // Eliminar el producto
-    this.products.splice(index, 1);
+    async deleteProduct(id){
+        const productToDelete = this.products.find( product => product.id == id )
+        if(productToDelete){
+            this.products = this.products.filter( product => product.id !== id )
 
-    // Actualizar los IDs de los productos restantes
-    for (let i = index; i < this.products.length; i++) {
-      this.products[i].id = i + 1;
+            await this.saveProducts()
+        }else{
+            throw new Error("A product with the id:" + id + "does not exist")
+        }
     }
-
-    // Guardar el arreglo en el archivo
-    fs.writeFileSync(this.path, JSON.stringify(this.products));
-
-    console.log(`El producto con id ${id} se ha eliminado correctamente.`);
-  }
 }
 
-export default ProductManager;
+module.exports = ProductManager;

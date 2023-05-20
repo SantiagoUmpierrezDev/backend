@@ -1,0 +1,35 @@
+<nav class='nav'>
+    <ul class='nav__list'>
+        <a href="/products"><li class='list__item'>Products</Link></li></a>
+        <a href="/chat"><li class='list__item'>Chat</li></a>
+        <a href="/realtimeproducts"><li class='list__item'>Real time products</Link></li></a>
+    </ul>
+</nav>
+
+<div>
+    <h1 class="">All products</h1>
+    <ul class="">
+        {{#if payload}}
+            {{#each payload}}
+                <li class="">
+                    <div>
+                        <p class="">{{title}}</p>
+                        <p class="">U$D{{price}}</p>
+                        <p class="">{{description}}</p>
+                        <p class="">Quantity: {{quantity}}</p>
+                        <p class="">id: {{_id}}</p>
+                        <p class="">Code: {{code}}</p>
+                        <p class="">Stock: {{stock}}</p>
+                        <p class="">Category: {{category}}</p>
+                        <div>
+                            <img src="{{this.thumbnail}}" alt="">
+                        </div>
+                        </div>
+                        <p class="">Status: {{status}}</p>
+                </li>
+                <hr class="my-5 border-gray-600">
+            {{/each}}
+        {{/if}}
+    </ul>
+</div>
+<script src="/static/products.js"></script>

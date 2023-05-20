@@ -1,68 +1,67 @@
-import express from 'express';
-import ProductManager from '../managerDaos/productManager.js';
-const productsRouter = express.Router();
-const productMan = new ProductManager("./src/data/products.json")
+const express = require ('express')
+const productManager = require('../managerDaos/mongo/product.mongo.js')
+const productsRouter = express.Router()
 
 productsRouter.get('/', async (req, res) => {
-  try {
-    await productMan.readFile();
-    const limit = req.query.limit || null;
-    const products = productMan.getProducts(limit);
-    res.status(200).json(products);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+    try{
+        let query = {}
+        if(req.query.query === undefined){ 
+            query = {}
+        }else if(req.query.query === 'true'){ 
+            query.status = true
+        }else if(req.query.query === 'false'){ 
+            query.status = false
+        }else{ 
+            query.category = req.query.query
+        }
+
+        let sort = null
+        if (req.query.sort === "up") { 
+            sort = { price: 1 };
+        } else if (req.query.sort === "desc") {
+            sort = { price: -1 };
+        }
+    }catch(err){
+        res.status(500).json({ error: err.message });
+    }
+})
 
 productsRouter.get('/:pid', async (req, res) => {
-  try {
-    await productMan.readFile();
-    const product = await productMan.getProductById(req.params.pid);
-    if (product) {
-      res.status(200).json(product);
-    } else {
-      res.status(404).json({ error: `Product with id ${req.params.pid} not found` });
+    try{
+        const product = await productManager.getProductById(req.params.pid)
+        res.status(200).send({status: 'succes', payload: product})
+    }catch(err){
+        res.status(500).json({ error: err.message });
     }
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+})
 
 productsRouter.post('/', async (req, res) => {
-  try {
-    await productMan.readFile();
-    const product = await productMan.addProduct(req.body);
-    res.status(201).json(product);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+    try{
+        const product = req.body
+        await productManager.addProduct(product)
+        res.status(200).send({status: 'succes', payload: await productManager.getProducts()})
+    }catch (err){
+        res.status(500).json({ error: err.message });
+    }
+})
 
 productsRouter.put('/:pid', async (req, res) => {
-  try {
-    const updatedProduct = await productMan.updateProduct(req.params.pid, req.body);
-    if (updatedProduct) {
-      res.status(200).json(updatedProduct);
-    } else {
-      res.status(404).json({ error: `Product with id ${req.params.pid} not found` });
+    try{
+        const product = req.body
+        await productManager.updateProduct(req.params.pid, product)
+        res.status(200).send({status: 'succes', payload: await productManager.getProducts()})
+    }catch (err){
+        res.status(500).json({ error: err.message });
     }
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+})
 
 productsRouter.delete('/:pid', async (req, res) => {
-  try {
-    await productMan.readFile();
-    const deletedProduct = await productMan.deleteProduct(req.params.pid);
-    if (deletedProduct) {
-      res.status(200).json({ message: `Product with id ${req.params.pid} deleted` });
-    } else {
-      res.status(404).json({ error: `Product with id ${req.params.pid} not found` });
+    try{
+        await productManager.deleteProduct(req.params.pid)
+        res.status(200).send({status: 'succes', payload: await productManager.getProducts()})
+    }catch(err){
+        res.status(500).json({ error: err.message });
     }
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+})
 
-export default productsRouter;
+module.exports = productsRouter;

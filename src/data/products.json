@@ -1,1 +1,35 @@
-[{"id":1,"title":"Product Title","description":"Product description","price":10.99,"thumbnail":"https://example.com/product-image.jpg","code":"PROD001","stock":10,"category":"Category","status":true},{"id":2,"title":"Product Title","description":"Product description","price":11.99,"thumbnail":"https://example.com/product-image.jpg","code":"PROD002","stock":11,"category":"Category","status":true},{"id":3,"title":"Product Title","description":"Product description","price":12.99,"thumbnail":"https://example.com/product-image.jpg","code":"PROD003","stock":12,"category":"Category","status":true}]
+[
+    {
+        "id": 1,
+        "title": "Mouse Logitech PRO X Superlight Gaming",
+        "price": 122,
+        "code": "89345",
+        "description": "Less than 63 grams. Advanced LIGHTSPEED wireless technology with low latency. Sub-micron accuracy with HERO 25K sensor. Eliminate all obstacles with our lightest and fastest PRO wireless mouse.",
+        "category": "pc",
+        "stock": 10,
+        "thumbnails": "https://thotcomputacion.com.uy/wp-content/uploads/2022/03/Logitech-PRO-X-Superlight.png",
+        "status": true
+    },
+    {
+        "id": 2,
+        "title": "HyperX Alloy Elite 2",
+        "price": 61.99,
+        "code": "27344",
+        "description": "For gamers, streamers and multitaskers who need more control at their fingertips, HyperX Alloy Elite 2 is the keyboard for you. With dedicated media keys and a large volume wheel, this full-featured gaming keyboard is ready for everything from editing videos to watching movies.",
+        "category": "pc",
+        "stock": 4,
+        "thumbnails": "https://thotcomputacion.com.uy/wp-content/uploads/2018/04/HyperX-Alloy-Elite-2-Packaging-Images-English-_US_-Layout_HyperX_Alloy_Elite_2_English_US_6_packaging_front_25_08_2020-18_32-1.png",
+        "status": true
+    },
+    {
+        "id": 3,
+        "title": "Mousepad HyperX Fury S XL Speed",
+        "price": 60,
+        "code": "561723",
+        "description": "The HyperX™ FURY Professional Gaming Mouse Pad has evenly stitched, anti-wear edges that provide a smooth surface for controlled gliding. The pad is made of a high-density fabric that provides a soft-touch surface yet has a fine texture ideal for optical mouse use. Dimensions: 900mm x 420mm",
+        "category": "pc",
+        "stock": 20,
+        "thumbnails": "https://thotcomputacion.com.uy/wp-content/uploads/2018/09/fury-s-xl.png",
+        "status": true
+    }
+]

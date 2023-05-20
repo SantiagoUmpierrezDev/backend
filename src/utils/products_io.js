@@ -1,19 +1,22 @@
-import express from 'express'
-import ProductManager from "../managerDaos/productManager.js"
+const productMan = require ('../managerDaos/mongo/product.mongo.js')
 
-const productMan = new ProductManager("../data/products.json");
+const product = async (io) => {
+    const products = await productMan.getProducts()
 
-const router = express.Router();
+    io.on('connection', i => {
+        console.log("New client connected");
+        i.emit('products', products)
+        i.on('addProduct', async data => {
+            await productMan.addProduct(data)
+            const products = await productMan.getProducts()
+            socket.emit('products', products)
+        })
+        i.on('deleteProduct', async data => {
+            await productMan.deleteProduct(data)
+            const products = await productMan.getProducts()
+            socket.emit('products', products)
+        })
+    })
+}
 
-router.get('/', async (req, res) => {
-  try {
-    const products = await productMan.readFile();
-    io.emit('products', products); 
-    res.render('products', { products });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server Error');
-  }
-});
-
-export default router;
+module.exports = product;

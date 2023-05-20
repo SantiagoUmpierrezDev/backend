@@ -1,0 +1,37 @@
+<nav class='nav'>
+    <ul class='nav__list'>
+        <a href="/products"><li class='list__item'>Products</li></a>
+        <a href="/chat"><li class='list__item'>Chat</li></a>
+        <a href="/realtimeproducts"><li class='list__item'>Real time products</li></a>
+    </ul>
+</nav>
+
+{{#if payload._id}}
+    <div>
+        <h1 class="">{{payload._id}} Cart </h1>
+    <ul class="">
+        {{#each payload.products}}
+            <li class="">
+                <div>
+                    <p class="">{{product.title}}</p>
+                    <p class="">U$D {{product.price}}</p>
+                    <p class="">{{product.description}}</p>
+                    <p class="">Quantity: {{quantity}}</p>
+                    <p class="">Id: {{product._id}}</p>
+                    <p class="">Code: {{product.code}}</p>
+                    <p class="">Stock: {{product.stock}}</p>
+                    <p class="">Category: {{product.category}}</p>
+                    <div>
+                        <img src="{{product.thumbnail}}" alt="">
+                    </div>
+                    <p class="">Status: {{product.status}}</p>
+                </div>
+            </li>
+        {{/each}}
+    </ul>
+    </div>
+{{else}}
+    <div>
+        <h1 class="">The cart doesn't exist</h1>
+    </div>
+{{/if}}

@@ -1,12 +1,44 @@
-<h1>Real time Products</h1>
-{{#if products}}
-  <ul>
-    {{#each products}}
-      <li>{{this.name}} - {{this.price}}</li>
-    {{/each}}
-  </ul>
-{{else}}
-  <p>No products found.</p>
-{{/if}}
+<nav class='nav'>
+    <ul class='nav__list'>
+        <a href="/products"><li class='list__item'>Products</Link></li></a>
+        <a href="/chat"><li class='list__item'>Chat</li></a>
+        <a href="/realtimeproducts"><li class='list__item'>Real time products</Link></li></a>
+    </ul>
+</nav>
 
-<script src="/static/js/realTimeProducts.js"></script>
+
+<h1 class="">Real time products</h1>
+<h1 class="">Add new product</h1>
+
+<form class="" id="form">
+    <label class="">Title: </label>
+    <input type="text" id="title">
+    
+    <label class="">Description: </label>
+    <input type="text" id="description"  class="">
+
+    <label class="">Quantity: </label>
+    <input type="text" id="quantity"  class="">
+    
+    <label class="">Price: </label>
+    <input type="number" id="price" class="">
+    
+    <label class="">Code: </label>
+    <input type="text" id="code"class="">
+    
+    <label class="">Stock: </label>
+    <input type="number" id="stock" class="">
+    
+    <label class="">Category: </label>
+    <input type="text" id="category" class="">
+    
+    <label class="">Thumbnail: </label>
+    <input type="text" id="thumbnails" class="">
+
+    <input type="submit" value="Send" class="">
+</form>
+
+<div id="products"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/static/realTimeProducts.js"></script>

@@ -1,7 +1,30 @@
-<div>
-    <h1>All Products</h1>
-        <ul id="products-list">
-        </ul>
-</div>
-<script src="/socket.io/socket.io.js"></script> 
-<script src="/static/js/index.js"></script>
+<nav class='nav'>
+    <ul class='nav__list'>
+        <a href="/products"><li class='list__item'>Products</Link></li></a>
+        <a href="/chat"><li class='list__item'>Chat</li></a>
+        <a href="/realtimeproducts"><li class='list__item'>Real time products</Link></li></a>
+    </ul>
+</nav>
+
+{{#if products}}
+<ul>
+    {{#each products}}
+    <li class="">
+        <div>
+            <p class="">{{this.title}}</p>
+            <p class="">U$D{{this.price}}</p>
+            <p class="">{{this.description}}</p>
+            <p class="">Quantity: {{this.quantity}}</p>
+            <p class="">Id: {{this.id}}</p>
+            <p class="">Code: {{this.code}}</p>
+            <p class="">Stock: {{this.stock}}</p>
+            <p class="">Category: {{this.category}}</p>
+            <div>
+                <img src="{{this.thumbnail}}" alt="">
+            </div>
+            <p class="">Status: {{this.status}}</p>
+            </div>
+    </li>
+    {{/each}}
+</ul>
+{{/if}}
