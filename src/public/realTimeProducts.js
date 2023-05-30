@@ -36,12 +36,6 @@ const form = document.querySelector('#form')
 form.addEventListener('submit', e => {
     e.preventDefault()
 
-    const textareaValues = form.elements.thumbnails.value
-    const array = textareaValues.split(",")
-    const thumbnails = array.map( element => {
-        return element.trim()
-    } )
-
     const product = {
         title: form.elements.title.value,
         description: form.elements.description.value,
@@ -49,10 +43,10 @@ form.addEventListener('submit', e => {
         price: form.elements.price.value,
         stock: form.elements.stock.value,
         category: form.elements.category.value,
-        thumbnails: thumbnails
+        thumbnails: form.elements.thumbnail.value
     }
 
-    if(product.title && product.description && product.code && product.price && product.stock && product.category && product.thumbnails){
+    if(product.title && product.description && product.code && product.price && product.stock && product.category && product.thumbnail){
         socket.emit('addProduct', product)
     }
 
