@@ -9,14 +9,14 @@ const product = async (io) => {
         i.on('addProduct', async data => {
             await productMan.addProduct(data)
             const products = await productMan.getProducts()
-            socket.emit('products', products)
+            i.emit('products', products)
         })
         i.on('deleteProduct', async data => {
             await productMan.deleteProduct(data)
             const products = await productMan.getProducts()
-            socket.emit('products', products)
+            i.emit('products', products)
         })
     })
 }
 
-module.exports = product;
+module.exports = product; 

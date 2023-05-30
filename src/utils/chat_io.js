@@ -5,7 +5,7 @@ const chat = async (io) => {
 
     io.on('connection', socket => {
         socket.on("message", i =>{
-            const newMessage = {email: i.email, content: i.message, createdAt: i.madeAt}
+            const newMessage = {email: i.email, content: i.message}
             logs.push(newMessage)
             messageModel.create(newMessage)
             io.emit('log', {logs});
@@ -13,4 +13,4 @@ const chat = async (io) => {
     })
 }
 
-module.exports = chat
+module.exports = chat;

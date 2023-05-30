@@ -13,9 +13,9 @@ class ProductManagerMongo {
         }
     }
 
-    async getProductById(productId){
+    async getProductById(pid){
         try{
-            return await productModel.findOne({_id: productId})
+            return await productModel.findOne({_id: pid})
         }catch(err){
             return new Error(err)
         }
@@ -29,21 +29,21 @@ class ProductManagerMongo {
         }
     }
 
-    async updateProduct(productId, product){
+    async updateProduct(pid, product){
         try{
-            return await productModel.updateOne({_id: productId}, product)
+            return await productModel.updateOne({_id: pid}, product)
         }catch(err){
             return new Error(err)
         }
     }
 
-    async deleteProduct(productId){
+    async deleteProduct(pid){
         try{
-            return await productModel.deleteOne({_id: productId})
+            return await productModel.deleteOne({_id: pid})
         }catch(err){
             return new Error(err)
         }
     }
 }
 
-module.exports = new ProductManagerMongo;
+module.exports = new ProductManagerMongo

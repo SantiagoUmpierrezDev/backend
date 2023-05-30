@@ -1,57 +1,60 @@
 const socket = io()
 
-socket.on('products', i =>{
-    const div = document.querySelector('#products')
+// Get products and show them
+socket.on('products', data =>{
+    const div = document.getElementById("products");
     let products = ''
-    i.forEach( product => {
+    data.forEach( product => {
         products += `
         <li class="">
             <div>
                 <p class="">${product.title}</p>
                 <p class="">U$D${product.price}</p>
                 <p class="">${product.description}</p>
-                <p class="">Quantity: ${product.quantity}</p>
                 <p class="">Id: ${product.id}</p>
                 <p class="">Code: ${product.code}</p>
+                <p class="">Status: ${product.status}</p>
                 <p class="">Stock: ${product.stock}</p>
                 <p class="">Category: ${product.category}</p>
-                <p class="">Status: ${product.status}</p>
-                <div>
-                    <img src="{{product.thumbnails}}" alt="">
-                </div>
-                <button id="${product._id}" class="removeBtn"> Remove </button>
+                <p class=""> ${product.thumbnail}</p>
+                <button class="deleteButton" id="${product._id}" class="">DELETE</button>
             </div>
         </li>`
     } )
     div.innerHTML = products
 
-    const removeBtn = document.querySelector('.removeBtn')
-    removeBtn.forEach(i => {
-        i.addEventListener("click", e => {
+const deleteButtons = document.querySelectorAll('.deleteButton')
+    deleteButtons.forEach(button => {
+        button.addEventListener("click", e => {
             const productId = e.target.id
             socket.emit('deleteProduct', productId)
         })
     })
 })
 
-
 const form = document.querySelector('#form')
 form.addEventListener('submit', e => {
     e.preventDefault()
 
-    const submitProducts = {
+    const textareaValues = form.elements.thumbnails.value
+    const array = textareaValues.split(",")
+    const thumbnails = array.map( element => {
+        return element.trim()
+    } )
+
+    const product = {
         title: form.elements.title.value,
-        price: form.elements.price.value,
-        quantity: form.elements.quantity.value,
-        stock: form.elements.stock.value,
         description: form.elements.description.value,
         code: form.elements.code.value,
+        price: form.elements.price.value,
+        stock: form.elements.stock.value,
         category: form.elements.category.value,
-        thumbnail: thumbnail
+        thumbnails: thumbnails
     }
 
-    if(submitProducts.title && submitProducts.description && submitProducts.quantity && submitProducts.code && submitProducts.price && submitProducts.stock && submitProducts.category && submitProducts.thumbnail){
+    if(product.title && product.description && product.code && product.price && product.stock && product.category && product.thumbnails){
         socket.emit('addProduct', product)
     }
+
     form.reset()
 })

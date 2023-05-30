@@ -4,7 +4,7 @@ const productsRouter = require ('./routes/products.router.js')
 const cartRouter = require ('./routes/cart.router.js') 
 const viewsRouter = require ('./routes/views.router.js') 
 const productIO = require ('./utils/products_io.js') 
-const chatIO = require ('./utils/chat_io.js') 
+const chatIO = require ('./utils/chat_io.js')
 const objectConfig = require ('./config/objectConfig.js') 
 const { Server } = require ('socket.io') 
 
@@ -42,4 +42,4 @@ app.use( "*" , (req, res) => {
 });
 
 productIO(io)
-chatIO(io)
+chatIO(io) 

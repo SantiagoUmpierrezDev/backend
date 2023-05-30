@@ -1,4 +1,4 @@
-const cartModel = require('./models/cart.model.js')
+const cartModel = require('./models/cart.model')
 
 class CartManagerMongo{
     constructor(model){
@@ -21,57 +21,57 @@ class CartManagerMongo{
         }
     }
 
-    async getCartById(cartId){
+    async getCartById(cid){
         try{
-            return await cartModel.findOne({_id: cartId}).populate('products.product')
+            return await cartModel.findOne({_id: cid}).populate('products.product')
         }catch(err){
             return new Error(err)
         }
     }
 
-    async addProductToCart(cartId, productId){
-        const cart = await cartModel.findById(cartId)
-        const index = cart.products.findIndex(product => product.product.toString() === productId)
-        if (index === -1) { 
-            const update = { $push: { products: { product: { _id: productId }, quantity: 1 } } };
-            await cartModel.updateOne({ _id: cartId }, update);
+    async addProductToCart(cid, pid){ 
+        const cart = await cartModel.findById(cid)
+        const index = cart.products.findIndex(product => product.product.toString() === pid)
+        if (index === -1) { // product not found
+            const update = { $push: { products: { product: { _id: pid }, quantity: 1 } } };
+            await cartModel.updateOne({ _id: cid }, update);
         } else { // product found
-            const filter = { _id: cartId, 'products.product': productId };
+            const filter = { _id: cid, 'products.product': pid };
             const update = { $inc: { 'products.$.quantity': 1 } };
             await cartModel.updateOne(filter, update);
         }
     }
 
-    async deleteProductFromCart(cartId, productId){
-        const cart = await this.getCartById(cartId)
-        const index = cart.products.findIndex(product => product._id === productId)
+    async deleteProductFromCart(cid, pid){
+        const cart = await cartModel.findOne({_id: cid})
+        const index = cart.products.findIndex(product => product.product == pid)
 
         if(index === -1){
             return null
         }else{
-            const filter = { _id: cartId };
-            const update = { $pull: { products: { _id: productId } } }
-            await cartModel.updateOne(filter, update)
+            const filter = { _id: cid };
+            const update = { $pull: { products: { product: pid } } }
+            await cartModel.findOneAndUpdate(filter, update)
         }
     }
 
-    async updateCart(cartId, products){
+    async updateCart(cid, products){
         try{
             const update = { $set: { products: products  } }
-            return await cartModel.updateOne({_id: cartId}, update)
+            return await cartModel.findOneAndUpdate({_id: cid}, update)
         }catch(error){
-            return new Error(err)
+            return new Error(error)
         }
     }
 
-    async updateQuantity(cartId, productId, quantity){
-        const cart = await this.getCartById(cartId)
-        const index = cart.products.findIndex(product => product._id === productId)
+    async updateQuantity(cid, pid, quantity){
+        const cart = await cartModel.findOne({_id: cid})
+        const index = cart.products.findIndex(product => product.product == pid)
 
         if (index === -1 || quantity < 1) {
             return null
         }else {
-            const filter = { _id: cartId, 'products._id': productId };
+            const filter = { _id: cid, 'products.product': pid };
             const update = { $set: { 'products.$.quantity': quantity } };
             await cartModel.updateOne(filter, update);
         }
@@ -80,7 +80,7 @@ class CartManagerMongo{
     async deleteAllProductsFromCart(cid){
         try{
             const update = { $set: { products: [] } }
-            await cartModel.updateOne({ _id: cartId }, update)
+            await cartModel.updateOne({ _id: cid }, update)
         }catch(error){
             return new Error(err)
         }

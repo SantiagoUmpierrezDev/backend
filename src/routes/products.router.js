@@ -1,8 +1,9 @@
-const express = require ('express')
+const express = require('express')
 const productManager = require('../managerDaos/mongo/product.mongo.js')
-const productsRouter = express.Router()
 
-productsRouter.get('/', async (req, res) => {
+const router = express.Router()
+
+router.get('/', async (req, res) => {
     try{
         let query = {}
         if(req.query.query === undefined){ 
@@ -16,52 +17,65 @@ productsRouter.get('/', async (req, res) => {
         }
 
         let sort = null
-        if (req.query.sort === "up") { 
+        if (req.query.sort === "asc") { 
             sort = { price: 1 };
         } else if (req.query.sort === "desc") {
             sort = { price: -1 };
         }
-    }catch(err){
-        res.status(500).json({ error: err.message });
+
+        const options = {
+            limit: req.query.limit ? parseInt(req.query.limit) : 10,
+            page: req.query.page ? parseInt(req.query.page) : 1,
+            sort: sort
+        }
+
+        const products = await productManager.getProducts(query, options)
+        const { docs, totalPages, prevPage, nextPage, page, hasPrevPage, hasNextPage } = products
+        hasPrevPage === false ? prevLink = null : prevLink = `/api/products?page=${parseInt(prevPage)}`
+        hasNextPage === false ? nextLink = null : nextLink = `/api/products?page=${parseInt(nextPage)}`
+
+        res.status(200).send({status: 'succes', payload: docs, totalPages, prevPage, nextPage, page, hasPrevPage, hasNextPage, prevLink, nextLink })
+    }catch(error){
+        res.status(400).send({status: 'error', message: error.message})
     }
 })
 
-productsRouter.get('/:pid', async (req, res) => {
+router.get('/:pid', async (req, res) => {
     try{
         const product = await productManager.getProductById(req.params.pid)
         res.status(200).send({status: 'succes', payload: product})
-    }catch(err){
-        res.status(500).json({ error: err.message });
+    }catch(error){
+        res.status(400).send({status: 'error', message: error.message})
     }
 })
 
-productsRouter.post('/', async (req, res) => {
+router.post('/', async (req, res) => {
     try{
         const product = req.body
         await productManager.addProduct(product)
         res.status(200).send({status: 'succes', payload: await productManager.getProducts()})
-    }catch (err){
-        res.status(500).json({ error: err.message });
+    }catch (error){
+        res.status(400).send({status: 'error', message: error.message})
     }
 })
 
-productsRouter.put('/:pid', async (req, res) => {
+router.put('/:pid', async (req, res) => {
     try{
         const product = req.body
         await productManager.updateProduct(req.params.pid, product)
         res.status(200).send({status: 'succes', payload: await productManager.getProducts()})
-    }catch (err){
-        res.status(500).json({ error: err.message });
+    }catch (error){
+        res.status(400).send({status: 'error', message: error.message})
     }
 })
 
-productsRouter.delete('/:pid', async (req, res) => {
+router.delete('/:pid', async (req, res) => {
     try{
         await productManager.deleteProduct(req.params.pid)
         res.status(200).send({status: 'succes', payload: await productManager.getProducts()})
-    }catch(err){
-        res.status(500).json({ error: err.message });
+    }catch(error){
+        res.status(400).send({status: 'error', message: error.message})
     }
 })
 
-module.exports = productsRouter;
+module.exports = router;
