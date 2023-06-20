@@ -5,7 +5,12 @@
         <a href="/realtimeproducts"><li class='list__item'>Real time products</Link></li></a>
     </ul>
 </nav>
-
+{{#if session}}
+<div>
+    <p>Welcome {{session.firstName}} {{session.lastName}}, email: {{session.email}}, role: {{session.role}}</p>
+    <a href="/api/sessions/logout">Logout</a>
+</div>
+{{/if}}
 <div>
     <h1 class="">All products</h1>
     <p>All the products will be added to the cart: 6475366957d3183d38f90598 </p>
